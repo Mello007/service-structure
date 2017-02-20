@@ -3,7 +3,9 @@ package ru.structure.service;
 import org.postgresql.util.PGobject;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import ru.structure.service.entity.Record;
 import ru.structure.service.entity.Structure;
+import ru.structure.service.mapper.RecordMapper;
 import ru.structure.service.mapper.StructureMapper;
 
 import javax.sql.DataSource;
@@ -59,6 +61,35 @@ public class StructureService {
         jsonObject.setValue(json);
         String SQL = "update structures set data = ? where id = ?";
         jdbcTemplateObject.update(SQL, jsonObject, id);
+    }
+
+
+    public List<Record> getRecordsByStructureId(Long id){
+        String SQL = "SELECT * FROM records INNER JOIN structures ON records.structure_id = structures.id WHERE structure_id = ?";
+        List <Record> records = jdbcTemplateObject.query(SQL, new Object[]{id}, new RecordMapper());
+        return records;
+    }
+
+    public void createRecordByStructure(Long id, String json) throws SQLException {
+        PGobject jsonObject = new PGobject();
+        jsonObject.setType("json");
+        jsonObject.setValue(json);
+        String sql = "insert into records (id, data) values (?, ?)";
+        jdbcTemplateObject.update(sql, new Object[]{id}, jsonObject);
+    }
+
+    public void updateRecordByStructureId(Long id, String json) throws SQLException {
+        PGobject jsonObject = new PGobject();
+        jsonObject.setType("json");
+        jsonObject.setValue(json);
+        String SQL = "update records set data = ? INNER JOIN structures ON records.structure_id = structures.id WHERE structure_id = ?";
+        jdbcTemplateObject.update(SQL, jsonObject, id);
+    }
+
+    //this method isnt work
+    public void deleteRecrodByStructureId(Integer id){
+        String SQL = "delete from structures where id = ?";
+        jdbcTemplateObject.update(SQL, id);
     }
 
 }
