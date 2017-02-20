@@ -1,28 +1,58 @@
-
-var globalvar = '';
-$(document).ready(function() {
-    $('.dropdown-menu-kind li a').click(function(){
-        globalvar = $(this).data('val');
-    })
-});
-function addNewItem() {
-    var name = $('#itemName').val();
-    var requestJSONparametr = "{\"itemName\": \"" + name + "\", \"itemKind\": \"" + globalvar + "\"}";
+function addNewStructure() {
+    var data = $('#json').val();
     $.ajax({
         type: "POST",
-        url: "/item/add",
+        url: "/app/structures",
         contentType: "application/json",
         dataType: 'json',
-        data: requestJSONparametr,
-        success: function (data) {
-            alert("Предмет успешно добавлен!");
-        },
-        error: function (data) {
-            alert("Не удалось добавить предмет! Что-то пошло не так, попробуйте еще раз");
-        }
+        data: data
+    });
+    location.reload();
+}
+
+function deleteStructure(id) {
+    $.ajax({
+        type: "DELETE",
+        url: "/app/structures/" + id,
+        contentType: "application/json",
+        dataType: 'json',
+        data: id
+    });
+    location.reload();
+}
+
+
+
+
+
+
+function showRecords() {
+    window.open("resources/records.html")
+}
+
+var idStructure = '';
+
+function openStructure(id) {
+    idStructure = id;
+    $.get("/app/structures/" + id, function(data){
+        $('#structureEdit').modal();
+        var structure = document.getElementById('jsonEdit');
+        structure.value = JSON.stringify([data.data]);
     });
 }
 
+function updateStructure() {
+    var data = $('#jsonEdit').val();
+    alert("asd");
+    $.ajax({
+        type: "PUT",
+        url: "/app/structures/" + idStructure,
+        contentType: "application/json",
+        dataType: 'json',
+        data: data
+    });
+    location.reload();
+}
 
 var x = new XMLHttpRequest();
 x.open("GET", "/app/structures", true);  //Указываем адрес GET-запроса
@@ -30,15 +60,16 @@ x.onload = function (){ //Функция которая отправляет з�
     var parsedItem = JSON.parse(this.responseText); //указываем что
     var studentTable = document.getElementById('all-items'); //получаем данные на странице по Id  - all-student
     parsedItem.forEach(function(item)  { //запускаем цикл
+        var json = JSON.parse(item['data']);
         var idStructure = document.createElement('td'); //создаем элемент td для таблицы
-        idStructure.innerHTML =  item['id'] ; //внедряем имя студента из БД
+        idStructure.innerHTML = item['id']; //внедряем имя студента из БД
         var structureName = document.createElement('td');
-        structureName.innerHTML = item['itemPrice'];//создаем элемент td для таблицы
+        structureName.innerHTML = json.title;//создаем элемент td для таблицы
         var operations = document.createElement('td');
         operations.innerHTML =
-            '<button class="btn">Просмотреть структуру</button> </br> ' +
-            '<button class="btn">Просмотреть записи</button>' +
-            '<button class="btn">Удалить</button>';
+            ' <button class="btn btn-primary btn-xs" onclick="openStructure(\'' + item['id'] + '\')">Просмотреть структуру</button> ' +
+            '<button class="btn btn-primary btn-xs" onclick="showRecords(\'' + item['id'] + '\')">Просмотреть записи</button> ' +
+            '<button class="btn btn-primary btn-xs" onclick="deleteStructure(\'' + item['id'] + '\')">Удалить</button>';
         var elementContainer = document.createElement('tr'); //создаем тег
         elementContainer.appendChild(idStructure);
         elementContainer.appendChild(structureName);
@@ -49,25 +80,3 @@ x.onload = function (){ //Функция которая отправляет з�
 };
 x.send(null);
 
-setInterval(x, 50000);
-
-
-$(document).ready(function() {
-    $('.dropdown-menu li a').click(function(){
-        var val_cur = $(this).data('val');
-        var requestJSONparametr = "{\"itemCurr\": \"" + val_cur + "\"}";
-        $.ajax({
-            type: "POST",
-            url: "/item/curr",
-            contentType: "application/json",
-            dataType: 'json',
-            data: requestJSONparametr,
-            success: function (data) {
-                alert("Цена установлена");
-            },
-            error: function (data) {
-                alert("Не удалось установить цену!");
-            }
-        });
-    });
-});

@@ -13,7 +13,6 @@ public class StructureMapper implements RowMapper<Structure> {
         Structure structure = new Structure();
         structure.setId(rs.getString("id"));
         structure.setData(rs.getString("data"));
-        structure.setCreated(rs.getString("created"));
         return structure;
     }
 }

@@ -22,28 +22,40 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#" style="padding:15px 15px;">CSP</a>
+            <a class="navbar-brand" href="#" style="padding:15px 15px;">Панель управления структурами</a>
         </div>
         <div class="collapse navbar-collapse js-navbar">
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        Выбрать валюту
-                        <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a data-val="usd" href="#">Доллар</a></li>
-                        <li><a data-val="rub" href="#">Рубль</a></li>
-                        <li><a data-val="eur" href="#">Евро</a></li>
-                    </ul>
-                </li>
-            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#myModal" class="btn" data-toggle="modal">Добавить</a></li>
+                <li><a href="#myModal" class="btn" data-toggle="modal">Добавить структуру</a></li>
             </ul>
         </div>
     </div>
 </nav>
+
+    <div id="structureEdit" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Заголовок модального окна -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Редактировать текущую структуру</h4>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="updateStructure()" action="javascript:void(null);">
+                        <div class="form-group">
+                            <label for="json">JSON:</label>
+                            <textarea class="form-control" rows="5" id="jsonEdit"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Обновить</button>
+                    </form>
+                </div>
+                <!-- Футер модального окна -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div id="myModal" class="modal fade">
@@ -52,25 +64,14 @@
                 <!-- Заголовок модального окна -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Добавить новый предмет</h4>
+                    <h4 class="modal-title">Добавить новую структуру</h4>
                 </div>
-                <!-- Основное содержимое модального окна -->
                 <div class="modal-body">
-                    <form onsubmit="addNewItem()" action="javascript:void(null);">
-                        <input type="text" placeholder="Введите название предмета" id="itemName">
-                        <li class="dropdown">
-                            <a id="drop4" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                Тип вещи
-                                <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu-kind">
-                                <li><a href="#" data-val="Field-Tested">После полевых испытаний</a></li>
-                                <li><a href="#" data-val="Minimal Wear">Немного поношенное</a></li>
-                                <li><a href="#" data-val="Battle-Scarred">Закаленное в боях</a></li>
-                                <li><a href="#" data-val="Well-Worn">Поношенное</a></li>
-                                <li><a href="#" data-val="Factory New">Прямо с завода</a></li>
-                            </ul>
-                        </li>
+                    <form onsubmit="addNewStructure()" action="javascript:void(null);">
+                        <div class="form-group">
+                            <label for="json">JSON:</label>
+                            <textarea class="form-control" rows="5" id="json"></textarea>
+                        </div>
                         <button type="submit" class="btn">Подтвердить</button>
                     </form>
                 </div>
@@ -81,6 +82,7 @@
             </div>
         </div>
     </div>
+
 
 <table class="table table-striped">
     <tr>

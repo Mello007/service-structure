@@ -8,6 +8,4 @@ import lombok.Setter;
 public class Structure {
     private String id;
     private String data;
-    private String created;
-    private String updated;
 }
