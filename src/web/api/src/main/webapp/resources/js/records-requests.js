@@ -18,12 +18,11 @@ $(document).ready(function() {
         id.setAttribute("id", "recordId");
         id.innerHTML = "id";
         studentTable.appendChild(id);
-        var reg = values[0]['properties'];
+        var reg = values['properties'];
         for (var property in reg) {
             var idStructure = document.createElement('th');
             idStructure.innerHTML = property;
             idStructure.setAttribute("id", property);
-            console.log(idStructure);
             studentTable.appendChild(idStructure);
         }
         var operations = document.createElement('th');
@@ -56,23 +55,25 @@ function fillTable(id) {
     $.get("/app/structures/" + id + "/records", function(newdata){
         // var idStructure = document.createElement('td'); //создаем элемент td для таблицы
         // idStructure.innerHTML = item['id'];
-        console.log(newdata);
         var studentTable = document.getElementById('all-items-records');
-        var records = JSON.parse(newdata[0]['data']);
         // start iterate for all objects in json
         for (var i = 0; i < newdata.length; i++){
             var recordFromJson = JSON.parse(newdata[i]['data']);
-            var recordId = document.createElement('td');
-            recordId.innerHTML = JSON.parse(newdata[i]['id']);
-            studentTable.appendChild(recordId);
-            for (var key in recordFromJson) {
-                if (recordFromJson.hasOwnProperty(key)) {
-                    var item = document.createElement('td');
-                    item.innerHTML = recordFromJson[key];
-                    console.log(key + " -> " + recordFromJson[key]);
-                    studentTable.appendChild(item);
+            for (var j = 0; j < recordFromJson.length; j++){
+                var recordId = document.createElement('td');
+                recordId.innerHTML = JSON.parse(newdata[i]['id']);
+                studentTable.appendChild(recordId);
+                for (var key in recordFromJson[j]) {
+                        var item = document.createElement('td');
+                        item.innerHTML = recordFromJson[j][key];
+                        studentTable.appendChild(item);
                 }
             }
+            
+            
+            // Object.keys(newdata[i]['data']).forEach(function(key,index) {
+            //     console.log(key);
+            // });
             var operations = document.createElement('td');
             operations.innerHTML =
                 ' <button class="btn btn-primary btn-xs" onclick="openRecord(\'' + JSON.parse(newdata[i]['id']) + '\')">Просмотреть запись</button> '  +
@@ -81,16 +82,13 @@ function fillTable(id) {
             studentTable.appendChild(operations);
             studentTable.appendChild(elementContainer);
         }
-        // console.log(JSON.parse(newdata[0]['data']));
-        // console.log(JSON.parse(newdata[1]['data']));
-        
     });
-    
+
 }
 
 function addNewRecord() {
     var id = window.location.href.split('?')[1];
-    var data = $('#json').val();
+    var data = $('#recordJson').val();
     $.ajax({
         type: "POST",
         url: "/app/structures/"+ id + "/records",
@@ -124,7 +122,7 @@ function openRecord(id) {
 }
 
 function updateRecord() {
-    var data = $('#newRecord').val();
+    var data = JSON.parse($('#newRecord').val());
     $.ajax({
         type: "PUT",
         url: "/app/structures/records/" + idRecord,

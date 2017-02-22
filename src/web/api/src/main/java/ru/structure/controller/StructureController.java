@@ -2,6 +2,7 @@ package ru.structure.controller;
 
 import com.couchbase.client.deps.com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.structure.service.StructureService;
@@ -22,7 +23,7 @@ public class StructureController {
         return structureService.getStructures();
     }
 
-    @RequestMapping(value = "structures/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "structures/{id}", method = RequestMethod.GET)
     public Structure getStructureById(@PathVariable("id") Long id) throws Exception {
        return structureService.getStructure(id);
     }
@@ -45,7 +46,7 @@ public class StructureController {
     }
 
     // обновляет структуру
-    @RequestMapping(value = "structures/{id}", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "structures/{id}", method = RequestMethod.PUT)
     public void updateStructure(@PathVariable("id") Long id, @RequestBody String json) throws Exception {
         structureService.update(id, json);
     }

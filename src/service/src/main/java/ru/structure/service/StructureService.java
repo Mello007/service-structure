@@ -39,12 +39,8 @@ public class StructureService {
         String SQL = "select * from structures where id = ?";
         Structure structure = jdbcTemplateObject.queryForObject(SQL,
                 new Object[]{id}, new StructureMapper());
-        char [] arr = structure.getData().replaceAll("\"\"", "").toCharArray();
-        char [] newchar = new char[arr.length+2];
-        newchar[0] = '[';
-        System.arraycopy(arr, 0, newchar, 1, arr.length);
-        newchar[newchar.length-1] = ']';
-        structure.setData(String.copyValueOf(newchar));
+        String d =  structure.getData().replace("\\", "");
+        structure.setData(d);
         return structure;
     }
 
@@ -59,21 +55,20 @@ public class StructureService {
         jdbcTemplateObject.update(SQL, jsonObject, id);
     }
 
-
     public List<Record> getRecordsByStructureId(Long id){
-        String SQL = "SELECT * FROM records INNER JOIN structures ON records.structure_id = structures.id WHERE structure_id = ?";
-        List <Record> records = jdbcTemplateObject.query(SQL, new Object[]{id}, new RecordMapper());
+        String sql = "SELECT * FROM records INNER JOIN structures ON records.structure_id = structures.id WHERE structure_id = ?";
+        List <Record> records = jdbcTemplateObject.query(sql, new Object[]{id}, new RecordMapper());
         return records;
     }
 
     public void createRecordByStructure(Long id, String json) throws SQLException {
         PGobject jsonObject = createPgObject(json);
-        String sql = "insert into records (id, data) values (?, ?)";
+        String sql = "insert into records (structure_id, data) values (?, ?)";
         jdbcTemplateObject.update(sql, new Object[]{id}, jsonObject);
     }
 
     public void updateRecordByStructureId(Long id, String json) throws SQLException {
-        PGobject jsonObject = createPgObject(json);
+        PGobject jsonObject = createPgObject(json.replace("\\", ""));
         String SQL = "update records set data = ? WHERE id= ?";
         jdbcTemplateObject.update(SQL, jsonObject, id);
     }
@@ -87,15 +82,8 @@ public class StructureService {
         String SQL = "select * from records where id = ?";
         Record record = jdbcTemplateObject.queryForObject(SQL,
                 new Object[]{id}, new RecordMapper());
-        char [] arr = record.getData().replaceAll("\"\"", "").toCharArray();
-        char [] newchar = new char[arr.length+2];
-        newchar[0] = '[';
-        System.arraycopy(arr, 0, newchar, 1, arr.length);
-        newchar[newchar.length-1] = ']';
-        record.setData(String.copyValueOf(newchar));
         return record;
     }
-
 
     private PGobject createPgObject(String json) throws SQLException {
         PGobject jsonObject = new PGobject();

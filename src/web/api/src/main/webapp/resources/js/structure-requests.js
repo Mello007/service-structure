@@ -30,13 +30,16 @@ function openStructure(id) {
     idStructure = id;
     $.get("/app/structures/" + id, function(data){
         $('#structureEdit').modal();
+        var json = JSON.stringify(data.data);
+        console.log(json);
         var structure = document.getElementById('jsonEdit');
         structure.value = JSON.stringify(data.data);
     });
 }
 
+
 function updateStructure() {
-    var data = $('#jsonEdit').val();
+    var data = JSON.parse($('#jsonEdit').val());
     $.ajax({
         type: "PUT",
         url: "/app/structures/" + idStructure,
