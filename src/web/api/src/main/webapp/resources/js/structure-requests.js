@@ -23,7 +23,6 @@ function deleteStructure(id) {
 
 function showRecords(id) {
     window.open("resources/records.html?" + id);
-
 }
 
 var idStructure = '';
@@ -32,7 +31,7 @@ function openStructure(id) {
     $.get("/app/structures/" + id, function(data){
         $('#structureEdit').modal();
         var structure = document.getElementById('jsonEdit');
-        structure.value = JSON.stringify([data.data]);
+        structure.value = JSON.stringify(data.data);
     });
 }
 

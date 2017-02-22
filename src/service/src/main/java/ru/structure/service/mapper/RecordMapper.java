@@ -7,9 +7,6 @@ import ru.structure.service.entity.Structure;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * Created by artem on 20.02.17.
- */
 public class RecordMapper implements RowMapper<Record> {
 
     @Override

@@ -32,6 +32,31 @@
         </div>
     </nav>
 
+    <div id="recordEdit" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Заголовок модального окна -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Редактировать текущую структуру</h4>
+                </div>
+                <div class="modal-body">
+                    <form onsubmit="updateRecord()" action="javascript:void(null);">
+                        <div class="form-group">
+                            <label for="newRecord">JSON:</label>
+                            <textarea class="form-control" rows="5" id="newRecord"></textarea>
+                        </div>
+                        <button type="submit" class="btn">Обновить</button>
+                    </form>
+                </div>
+                <!-- Футер модального окна -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div id="myModal" class="modal fade">
         <div class="modal-dialog">
@@ -39,13 +64,13 @@
                 <!-- Заголовок модального окна -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Добавить новую структуру</h4>
+                    <h4 class="modal-title">Добавить новую запись</h4>
                 </div>
                 <div class="modal-body">
-                    <form onsubmit="addNewStructure()" action="javascript:void(null);">
+                    <form onsubmit="addNewRecord()" action="javascript:void(null);">
                         <div class="form-group">
-                            <label for="json">JSON:</label>
-                            <textarea class="form-control" rows="5" id="json"></textarea>
+                            <label for="recordJson">JSON:</label>
+                            <textarea class="form-control" rows="5" id="recordJson"></textarea>
                         </div>
                         <button type="submit" class="btn">Подтвердить</button>
                     </form>
@@ -61,9 +86,6 @@
 
     <table class="table table-striped">
         <tr id="all-items-records-desc">
-            <!--<th class="hand-th">ID</th>-->
-            <!--<th class="hand-th">Наименование</th>-->
-            <!--<th class="hand-th">Операции</th>-->
         </tr>
         <tbody id="all-items-records">
         </tbody>

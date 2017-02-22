@@ -57,15 +57,18 @@ public class StructureController {
     }
 
     // обновляет конкретную запись
-    @RequestMapping(value = "structures/{id}/records", method = RequestMethod.PUT, consumes = "application/json")
+    @RequestMapping(value = "structures/records/{id}", method = RequestMethod.PUT, consumes = "application/json")
     public void updateCertainStructure(@PathVariable("id") Long id, @RequestBody String json) throws Exception {
         structureService.updateRecordByStructureId(id, json);
     }
 
-    @RequestMapping(value = "structures/{id}/records", method = RequestMethod.DELETE)
-    public void deleteRecordByStructureId(@PathVariable("id") Long id, @RequestBody String json) throws Exception {
-        structureService.updateRecordByStructureId(id, json);
+    @RequestMapping(value = "structures/records/{record_id}", method = RequestMethod.DELETE)
+    public void deleteRecordByStructureId(@PathVariable("record_id") Long recordId) throws Exception {
+        structureService.deleteRecordByStructureId(recordId);
     }
 
-
+    @RequestMapping(value = "structures/records/{record_id}", method = RequestMethod.GET)
+    public Record getRecordById(@PathVariable("record_id") Long recordId) throws Exception {
+        return structureService.getRecordById(recordId);
+    }
 }
