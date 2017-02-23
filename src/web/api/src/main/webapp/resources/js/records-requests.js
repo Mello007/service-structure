@@ -30,50 +30,29 @@ $(document).ready(function() {
         operations.setAttribute("id", "operations");
         studentTable.appendChild(operations);
     });
-    //
-    // var x = new XMLHttpRequest();
-    // x.open("GET", "/app/structures/" + id, true);  //Указываем адрес GET-запроса
-    // x.onload = function () {
-    //     var parsedItem = JSON.parse(this.responseText);
-    //     parsedItem.forEach(function (item) {
-    //         var json = JSON.parse(item['data']);
-    //         var idStructure = document.createElement('th');
-    //         idStructure.innerHTML = JSON.parse(json.description);
-    //         studentTable.appendChild(idStructure);
-    //     });
-    // };
-    // x.send(null);
-    // $.get("/app/structures/" + id, function(data){
-    //     structure.value = JSON.stringify([data.data]);
-    // });
-    //
     fillTable(id);
 });
 
 
 function fillTable(id) {
     $.get("/app/structures/" + id + "/records", function(newdata){
-        // var idStructure = document.createElement('td'); //создаем элемент td для таблицы
-        // idStructure.innerHTML = item['id'];
         var studentTable = document.getElementById('all-items-records');
         // start iterate for all objects in json
         for (var i = 0; i < newdata.length; i++){
             var recordFromJson = JSON.parse(newdata[i]['data']);
-            for (var j = 0; j < recordFromJson.length; j++){
+            console.log(recordFromJson);
+            
                 var recordId = document.createElement('td');
                 recordId.innerHTML = JSON.parse(newdata[i]['id']);
                 studentTable.appendChild(recordId);
-                for (var key in recordFromJson[j]) {
+                for (var key in recordFromJson) {
                         var item = document.createElement('td');
-                        item.innerHTML = recordFromJson[j][key];
+                        item.innerHTML = recordFromJson[key];
                         studentTable.appendChild(item);
                 }
-            }
             
             
-            // Object.keys(newdata[i]['data']).forEach(function(key,index) {
-            //     console.log(key);
-            // });
+            
             var operations = document.createElement('td');
             operations.innerHTML =
                 ' <button class="btn btn-primary btn-xs" onclick="openRecord(\'' + JSON.parse(newdata[i]['id']) + '\')">Просмотреть запись</button> '  +

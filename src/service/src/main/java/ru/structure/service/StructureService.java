@@ -1,7 +1,13 @@
 package ru.structure.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.postgresql.util.PGobject;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 import ru.structure.service.entity.Record;
 import ru.structure.service.entity.Structure;
@@ -10,6 +16,9 @@ import ru.structure.service.mapper.StructureMapper;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -25,14 +34,28 @@ public class StructureService {
 
     public List<Structure> getStructures() {
         String SQL = "select * from structures";
-        List <Structure> structures = jdbcTemplateObject.query(SQL, new StructureMapper());
+        List<Structure> structures = jdbcTemplateObject.query(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                return connection.prepareStatement(SQL);
+            }
+        }, new StructureMapper());
         return structures;
     }
 
     public void create(String json) throws IOException, SQLException {
         PGobject jsonObject = createPgObject(json);
-        String sql = "insert into structures (data) values (?)";
-        jdbcTemplateObject.update(sql, jsonObject);
+        String sql = "insert into structures (data) values (?::JSONB)";
+//        jdbcTemplateObject.update(sql, jsonObject);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplateObject.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, json);
+                return ps;
+            }
+        }, keyHolder);
     }
 
     public Structure getStructure(Long id) {
@@ -45,14 +68,39 @@ public class StructureService {
     }
 
     public void delete(Integer id){
-        String SQL = "delete from structures where id = ?";
-        jdbcTemplateObject.update(SQL, id);
+        String sql = "delete from structures where id = ?";
+        jdbcTemplateObject.update(sql, id);
+        jdbcTemplateObject.query(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setObject(1, id);
+                return ps;
+            }
+        }, new StructureMapper());
     }
 
-    public void update(Long id, String json) throws SQLException {
+
+    public void updateStructure(Long id, String json) throws SQLException {
         PGobject jsonObject = createPgObject(json);
-        String SQL = "update structures set data = ? where id = ?";
-        jdbcTemplateObject.update(SQL, jsonObject, id);
+        String sql = "update structures set data = ?::JSONB where id = ?";
+//        jdbcTemplateObject.update(sql, jsonObject, id);
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplateObject.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                String c = null;
+                try {
+                    c = new ObjectMapper().writeValueAsString(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, json);
+                ps.setObject(2, id);
+                return ps;
+            }
+        }, keyHolder);
     }
 
     public List<Record> getRecordsByStructureId(Long id){
@@ -62,15 +110,43 @@ public class StructureService {
     }
 
     public void createRecordByStructure(Long id, String json) throws SQLException {
-        PGobject jsonObject = createPgObject(json);
-        String sql = "insert into records (structure_id, data) values (?, ?)";
-        jdbcTemplateObject.update(sql, new Object[]{id}, jsonObject);
+        String sql = "insert into records (structure_id, data) values (?, ?::JSONB)" ;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplateObject.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                String c = null;
+                try {
+                    c = new ObjectMapper().writeValueAsString(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setObject(1, id);
+                ps.setString(2, json);
+                return ps;
+            }
+        }, keyHolder);
     }
 
     public void updateRecordByStructureId(Long id, String json) throws SQLException {
-        PGobject jsonObject = createPgObject(json.replace("\\", ""));
-        String SQL = "update records set data = ? WHERE id= ?";
-        jdbcTemplateObject.update(SQL, jsonObject, id);
+        String sql = "update records set data = ?::JSONB WHERE id= ?";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplateObject.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                String c = null;
+                try {
+                    c = new ObjectMapper().writeValueAsString(json);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, json);
+                ps.setObject(2, id);
+                return ps;
+            }
+        }, keyHolder);
     }
 
     public void deleteRecordByStructureId(Long recordId){
@@ -82,6 +158,9 @@ public class StructureService {
         String SQL = "select * from records where id = ?";
         Record record = jdbcTemplateObject.queryForObject(SQL,
                 new Object[]{id}, new RecordMapper());
+
+
+        record.setData(record.getData().replace("\\", "").replace("n", ""));
         return record;
     }
 

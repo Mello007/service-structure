@@ -1,6 +1,5 @@
 package ru.structure.service.entity;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
