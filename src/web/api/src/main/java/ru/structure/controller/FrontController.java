@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class FrontController {
-    @RequestMapping (value = "/", method = RequestMethod.GET)
-    public String getMain(){
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String getMain() {
         return "resources/admin.html";
     }
 

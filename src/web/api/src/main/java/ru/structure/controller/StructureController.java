@@ -12,7 +12,8 @@ import java.util.List;
 @RequestMapping(value = "app")
 public class StructureController {
 
-    @Autowired StructureService structureService;
+    @Autowired
+    StructureService structureService;
 
     // возвращает список всех структур
     @RequestMapping(value = "structures", method = RequestMethod.GET, produces = "application/json")
@@ -23,13 +24,13 @@ public class StructureController {
     // возвращает структуру по id
     @RequestMapping(value = "structures/{id}", method = RequestMethod.GET)
     public Structure getStructureById(@PathVariable("id") Long id) throws Exception {
-       return structureService.getStructure(id);
+        return structureService.getStructure(id);
     }
 
     // возвращает список записей по id структуры
     @RequestMapping(value = "structures/{id}/records", method = RequestMethod.GET, produces = "application/json")
     public List<Record> getRecordsByStructure(@PathVariable("id") Long id) throws Exception {
-      return structureService.getRecordsByStructureId(id);
+        return structureService.getRecordsByStructureId(id);
     }
 
     // создает новую структуру
