@@ -26,7 +26,7 @@
             </div>
             <div class="collapse navbar-collapse js-navbar">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#myModal" class="btn" data-toggle="modal">Добавить новую запись</a></li>
+                    <li><a href="#myModal" class="btn" data-toggle="modal" onclick="fillRecordsField()">Добавить новую запись</a></li>
                 </ul>
             </div>
         </div>
@@ -68,9 +68,8 @@
                 </div>
                 <div class="modal-body">
                     <form onsubmit="addNewRecord()" action="javascript:void(null);">
-                        <div class="form-group">
-                            <label for="recordJson">JSON:</label>
-                            <textarea class="form-control" rows="5" id="recordJson"></textarea>
+                        <div class="form-group" id="formAdding">
+
                         </div>
                         <button type="submit" class="btn">Добавить</button>
                     </form>

@@ -42,7 +42,6 @@ public class StructureService {
 
     public void create(String json) throws IOException, SQLException {
         String sql = "insert into structures (data) values (?::JSONB)";
-//        jdbcTemplateObject.update(sql, jsonObject);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplateObject.update(new PreparedStatementCreator() {
             @Override

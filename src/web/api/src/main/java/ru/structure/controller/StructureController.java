@@ -52,7 +52,7 @@ public class StructureController {
     }
 
     // создает новую запись по id структуры
-    @RequestMapping(value = "structures/{id}/records", method = RequestMethod.POST)
+    @RequestMapping(value = "structures/{id}/records", method = RequestMethod.POST, consumes = "application/json")
     public void createNewRecordByStructure(@PathVariable("id") Long id, @RequestBody String json) throws Exception {
         structureService.createRecordByStructure(id, json);
     }
